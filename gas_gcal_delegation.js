@@ -10,8 +10,9 @@
  *
  * Functions:
  * - `onFormSubmit(e)`: Triggered when the form is submitted. This function retrieves the data from the most recent submission, 
- *   attempts to add the authorized user as a calendar owner, updates the spreadsheet with a completion timestamp if successful, 
- *   and sends an email notification to the form submitter.
+ *   checks if the submitter is authorized, and if not, marks the submission as "Not Authorized" and sends an email notification. 
+ *   If the submitter is authorized, the function attempts to add the authorized user as a calendar owner, updates the spreadsheet 
+ *   with a completion timestamp if successful, and sends an email notification to the form submitter.
  * 
  * - `addDelegateToCalendarUsingServiceAccount(calendarOwnerEmail, authorizedUserEmail)`: This function uses the Calendar API 
  *   (Advanced Service) to add the specified authorized user as an owner of the calendar owned by the specified user. 
@@ -24,7 +25,7 @@
  * 1. **Form Setup:**
  *    - The Google Form should be configured with the following fields:
  *      1. **Timestamp**: Automatically captured by Google Forms.
- *      2. **Your Email Address**: The email address of the person submitting the form.
+ *      2. **Email Address**: Automatically collected by Google Forms as the verified email address of the person submitting the form.
  *      3. **Calendar Owner Email Address**: The email address of the person who owns the calendar.
  *      4. **Authorized Calendar User Email Address**: The email address of the person to whom calendar access is being delegated.
  *    - The form should be linked to a Google Sheet where submissions are recorded.
@@ -40,17 +41,22 @@
  * 4. **Script Execution:**
  *    - Upon form submission, the script will:
  *      1. Retrieve the most recent form submission data.
- *      2. Attempt to add the authorized user as an owner of the calendar specified by the calendar owner's email.
- *      3. Update the corresponding row in the linked Google Sheet with a timestamp if the operation is successful.
- *      4. Send an email notification to the submitter, indicating whether the operation was successful or if there was an issue.
+ *      2. Verify that the submitter is authorized to use the form.
+ *      3. If the user is not authorized, mark the submission as "Not Authorized" in the "Completed" column and send an email notification.
+ *      4. If the user is authorized, attempt to add the authorized user as an owner of the calendar specified by the calendar owner's email.
+ *      5. Update the corresponding row in the linked Google Sheet with a timestamp if the operation is successful.
+ *      6. Send an email notification to the submitter, indicating whether the operation was successful or if there was an issue.
  * 
  * Notes:
+ * - The script restricts form access to only one specific email address (besides the owner). Unauthorized users will have their submissions 
+ *   marked as "Not Authorized" in the "Completed" column, and they will receive an email notification informing them that they are not authorized 
+ *   to use the form.
  * - Ensure that the service account has the appropriate permissions to manage calendar ACLs (Access Control Lists) for the users involved.
  * - The script logs success or failure messages for the delegation process, which can be reviewed in the Script Editor's Logs.
  * - In case of an error during the delegation process, the script sends a failure notification with instructions to contact the administrator.
  * 
  * Author: Chad Ramey
- * Date: August 14, 2024
+ * Date: August 22, 2024
  */
 
 function onFormSubmit(e) {
@@ -58,25 +64,41 @@ function onFormSubmit(e) {
     var lastRow = sheet.getLastRow();
   
     // Get data from the last submitted form
-    var timestamp = sheet.getRange(lastRow, 1).getValue();
-    var yourEmail = sheet.getRange(lastRow, 2).getValue();
-    var calendarOwnerEmail = sheet.getRange(lastRow, 3).getValue();
-    var authorizedUserEmail = sheet.getRange(lastRow, 4).getValue();
-  
-    // Use the service account to add the authorized user as a calendar manager (owner)
-    var success = addDelegateToCalendarUsingServiceAccount(calendarOwnerEmail, authorizedUserEmail);
-  
-    // If successful, update the Completed Timestamp column with date and time
-    if (success) {
-      var completedTimestamp = new Date();
-      var formattedTimestamp = Utilities.formatDate(completedTimestamp, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
-      sheet.getRange(lastRow, 5).setValue(formattedTimestamp);
+    var timestamp = e.values[0]; // Timestamp
+    var yourEmail = e.values[1]; // Email Address
+    var calendarOwnerEmail = e.values[2]; // Calendar Owner Email Address
+    var authorizedUserEmail = e.values[3]; // Authorized Calendar User Email Address
 
-      // Send success email
-      sendEmailNotification(yourEmail, authorizedUserEmail, true);
-    } else {
-      // Send failure email
-      sendEmailNotification(yourEmail, authorizedUserEmail, false);
+    // Specify the allowed email address
+    var allowedEmail = ""; // Replace with the actual email address
+
+    // Check if the submitter's email is allowed
+    if (yourEmail !== allowedEmail) {
+        // If not, mark as "Not Authorized" and exit the function
+        sheet.getRange(lastRow, 5).setValue("Not Authorized");
+        MailApp.sendEmail(yourEmail, "Unauthorized Access", "You are not authorized to use this form.");
+        return;
+    }
+
+    try {
+        // Use the service account to add the authorized user as a calendar manager (owner)
+        var success = addDelegateToCalendarUsingServiceAccount(calendarOwnerEmail, authorizedUserEmail);
+    
+        // If successful, update the Completed column with date and time
+        if (success) {
+            var completedTimestamp = new Date();
+            var formattedTimestamp = Utilities.formatDate(completedTimestamp, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
+            sheet.getRange(lastRow, 5).setValue(formattedTimestamp);
+
+            // Send success email
+            sendEmailNotification(yourEmail, authorizedUserEmail, true);
+        } else {
+            // Send failure email
+            sendEmailNotification(yourEmail, authorizedUserEmail, false);
+        }
+    } catch (error) {
+        Logger.log("Error: " + error.message);
+        MailApp.sendEmail("", "Script Failure Alert: Gcal Delegation", "The script encountered an error: " + error.message); // Add email address
     }
 }
   
@@ -110,12 +132,12 @@ function sendEmailNotification(yourEmail, authorizedUserEmail, success) {
                authorizedUserEmail + " has been granted access to the calendar owned by " +
                "the specified user.\n\nPlease note that " + authorizedUserEmail + " will receive an email to add " +
                "the calendar to their list. They need to click 'Add' to complete the process.\n\n" +
-               "If you have any questions, please let me know.\n\nBest regards,\nPOC Name";
+               "If you have any questions, please let me know.\n\nBest regards,\n"; // Name
     } else {
         subject = "Calendar Delegation Failed";
         body = "Hello,\n\nThe calendar delegation process encountered an issue and was not successful. " +
-               "Please contact POC Name at POC Email for further assistance.\n\n" +
-               "Thank you,\nPOC Name";
+               "Please contact at  for further assistance.\n\n" +
+               "Thank you,\n"; // Email, name, name
     }
 
     MailApp.sendEmail(yourEmail, subject, body);

@@ -5,16 +5,19 @@
  * This Google Apps Script automatically creates a calendar event based on the information submitted through a Google Form. 
  * The script is triggered upon form submission and uses the data provided in the form to create an event in a specified Google Calendar. 
  * The event's title is set to the "Summary and System" field, and the event description includes several other form fields, 
- * including the "Change Process," "Change Request Description and Rationale," "Smoke Testing Plan," and "Rollback Plan." 
- * Upon successful creation of the event, a confirmation email is sent to a designated recipient.
+ * including the "Requested by" field (with the submitter's email address), "Change Process," "Change Request Description and Rationale," 
+ * "Smoke Testing Plan," and "Rollback Plan." Upon successful creation of the event, a confirmation email is sent to a designated recipient, 
+ * which also includes the email address of the form submitter.
  *
  * Functions:
  * - `onFormSubmit(e)`: Triggered when the form is submitted. This function extracts relevant data from the form submission, 
  *   constructs an event in the specified Google Calendar, and sends a confirmation email upon successful event creation. 
- *   If an error occurs during event creation, an error notification email is sent.
+ *   The event description includes the submitter's email address (from column B) as "Requested by: email address". 
+ *   The confirmation email also includes the submitter's email address. If an error occurs during event creation, 
+ *   an error notification email is sent.
  * 
- * - `sendConfirmationEmail(eventTitle, eventDateTime)`: Sends a confirmation email to the designated recipient after the event 
- *   has been successfully created, including the event's title and start time.
+ * - `sendConfirmationEmail(eventTitle, eventDateTime, emailAddress)`: Sends a confirmation email to the designated recipient after the event 
+ *   has been successfully created, including the event's title, start time, and the email address of the submitter.
  * 
  * - `sendErrorNotification(errorMessage)`: Sends an error notification email to the designated recipient if an error occurs 
  *   during the event creation process, detailing the nature of the error.
@@ -44,11 +47,12 @@
  * 
  * 4. **Script Execution:**
  *    - Upon form submission, the script will:
- *      1. Retrieve the most recent form submission data.
+ *      1. Retrieve the most recent form submission data, including the submitter's email address.
  *      2. Combine the "Start Date" and "Start Time" to create the event's start time, and "End Date" and "End Time" to create the event's end time.
  *      3. Create a new event in the specified Google Calendar with the "Summary and System" field as the title.
- *      4. Populate the event description with the "Change Process," "Change Request Description and Rationale," "Smoke Testing Plan," and "Rollback Plan."
- *      5. Send a confirmation email to the designated recipient, including the event's title and start time.
+ *      4. Populate the event description with the "Requested by: email address," "Change Process," "Change Request Description and Rationale," 
+ *         "Smoke Testing Plan," and "Rollback Plan."
+ *      5. Send a confirmation email to the designated recipient, including the event's title, start time, and the submitter's email address.
  *      6. If an error occurs during event creation, send an error notification email to the designated recipient.
  * 
  * Notes:
@@ -57,20 +61,21 @@
  * - If an error occurs during event creation, the error message is captured and emailed to the designated recipient for review.
  * 
  * Author: Chad Ramey
- * Date: August 23, 2024
+ * Date: August 27, 2024
  */
 
 // Function to trigger on form submission
 function onFormSubmit(e) {
   try {
-    // Define the test calendar ID
-    const calendarId = ''; // Gcal ID
+    // Define the calendar ID
+    const calendarId = 'calendar ID'; // Calendar ID
 
     // Get the form responses
     const formResponse = e.values;
     console.log('Form Response:', formResponse);
 
     // Extract the relevant fields from the form response
+    const emailAddress = formResponse[1]; // Email Address from column B
     const summaryAndSystem = formResponse[3]; // "Summary and System" is the 4th element (index 3)
     const startDate = formResponse[4]; // "Start Date" is the 5th element (index 4)
     const startTime = formResponse[5]; // "Start Time" is the 6th element (index 5)
@@ -92,8 +97,8 @@ function onFormSubmit(e) {
     console.log('Start DateTime:', startDateTime);
     console.log('End DateTime:', endDateTime);
 
-    // Build the event description
-    const eventDescription = `Change Process: ${changeProcess}\nSummary and System: ${summaryAndSystem}\n` +
+    // Build the event description, now including the "Requested by" email address
+    const eventDescription = `Requested by: ${emailAddress}\nChange Process: ${changeProcess}\nSummary and System: ${summaryAndSystem}\n` +
                              `Change Request Description and Rationale: ${changeDescription}\nSmoke Testing Plan: ${smokeTestingPlan}\n` +
                              `Rollback Plan: ${rollbackPlan}`;
 
@@ -108,7 +113,7 @@ function onFormSubmit(e) {
     console.log('Event Created:', event);
 
     // Send confirmation email
-    sendConfirmationEmail(summaryAndSystem, startDateTime);
+    sendConfirmationEmail(summaryAndSystem, startDateTime, emailAddress);
 
   } catch (error) {
     // Handle errors and notify the appropriate parties
@@ -118,10 +123,10 @@ function onFormSubmit(e) {
 }
 
 // Function to send a confirmation email after event creation
-function sendConfirmationEmail(eventTitle, eventDateTime) {
-  const emailRecipients = ''; // Recipient email
+function sendConfirmationEmail(eventTitle, eventDateTime, emailAddress) {
+  const emailRecipients = 'email'; // Update this to the desired recipient
   const subject = `Cab Form Confirmation: Event "${eventTitle}" Created`;
-  const body = `The event "${eventTitle}" has been created on ${eventDateTime} in the test calendar.`;
+  const body = `The event "${eventTitle}" has been created by ${emailAddress} on ${eventDateTime} in the Calendar. Please review the details of the event and let the requestor know if there’s any concerns or if this is approved if this is a Full CAB Submission.`;
 
   console.log('Sending Confirmation Email to:', emailRecipients);
   MailApp.sendEmail(emailRecipients, subject, body);
@@ -130,7 +135,7 @@ function sendConfirmationEmail(eventTitle, eventDateTime) {
 
 // Function to send an error notification if something goes wrong
 function sendErrorNotification(errorMessage) {
-  const emailRecipient = ''; // Recipient email
+  const emailRecipient = 'email'; // Update this to the desired recipient
   const subject = 'Cab Form Error: Event Creation Failed';
   const body = `An error occurred while attempting to create an event: ${errorMessage}`;
 

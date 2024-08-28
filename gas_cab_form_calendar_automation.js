@@ -15,7 +15,7 @@
  *   The confirmation email includes the email address of the submitter (from column B) and detailed event information. 
  *   If an error occurs during event creation, an error notification email is sent.
  * 
- * - `sendConfirmationEmail(eventTitle, eventDateTime, emailAddress, changeProcess, changeDescription, smokeTestingPlan, rollbackPlan)`: 
+ * - `sendConfirmationEmail(eventTitle, eventDateTime, emailAddress, changeProcess, summaryAndSystem, changeDescription, smokeTestingPlan, rollbackPlan)`: 
  *   Sends a confirmation email to the designated recipient after the event has been successfully created, including the event's title, 
  *   start time, and detailed event information along with the email address of the submitter.
  * 
@@ -68,7 +68,7 @@
 // Function to trigger on form submission
 function onFormSubmit(e) {
   try {
-    // Define the Content Platform Releases calendar ID
+    // Define the calendar ID
     const calendarId = ''; // Update
 
     // Get the form responses
@@ -127,7 +127,8 @@ function onFormSubmit(e) {
 function sendConfirmationEmail(eventTitle, eventDateTime, emailAddress, changeProcess, summaryAndSystem, changeDescription, smokeTestingPlan, rollbackPlan) {
   const emailRecipients = ''; // Update
   const subject = `Cab Form Confirmation: Event "${eventTitle}" Created`;
-  const body = `The "${eventTitle}" event has been created on ${eventDateTime} by ${emailAddress} in the Content Platform Releases Calendar. Please review the details of the event below and let the requestor know if there’s any concerns or if this is approved if this is a Full CAB Submission.\n\n` +
+  const body = `The "${eventTitle}" event has been created on ${eventDateTime} in the Content Platform Releases Calendar. Please review the below change control details and reply to the requestor and cbs.cab@onepeloton.com with any queries.\n\n` +
+               `Full CAB submissions require two explicit approvals; to approve please reply to the requestor and cbs.cab@onepeloton.com with your approval.\n\n` +
                `Requested by: ${emailAddress}\n\n` +
                `Change Process: ${changeProcess}\n\n` +
                `Summary and System: ${summaryAndSystem}\n\n` +

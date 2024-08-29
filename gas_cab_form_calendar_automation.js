@@ -6,8 +6,8 @@
  * The script is triggered upon form submission and uses the data provided in the form to create an event in a specified Google Calendar. 
  * The event's title is set to the "Summary and System" field, and the event description includes several other form fields, 
  * including the "Requested by" email address from column B, "Change Process," "Change Request Description and Rationale," 
- * "Smoke Testing Plan," and "Rollback Plan." Upon successful creation of the event, a confirmation email is sent to a 
- * designated recipient, which includes detailed information about the event and the email address of the form submitter.
+ * "Smoke Testing Plan," and "Rollback Plan." Upon successful creation of the event, a confirmation email is sent to designated recipients, 
+ * which includes detailed information about the event and the email address of the form submitter.
  *
  * Functions:
  * - `onFormSubmit(e)`: Triggered when the form is submitted. This function extracts relevant data from the form submission, 
@@ -16,7 +16,7 @@
  *   If an error occurs during event creation, an error notification email is sent.
  * 
  * - `sendConfirmationEmail(eventTitle, eventDateTime, emailAddress, changeProcess, summaryAndSystem, changeDescription, smokeTestingPlan, rollbackPlan)`: 
- *   Sends a confirmation email to the designated recipient after the event has been successfully created, including the event's title, 
+ *   Sends a confirmation email to the designated recipients after the event has been successfully created, including the event's title, 
  *   start time, and detailed event information along with the email address of the submitter.
  * 
  * - `sendErrorNotification(errorMessage)`: Sends an error notification email to the designated recipient if an error occurs 
@@ -52,7 +52,7 @@
  *      3. Create a new event in the specified Google Calendar with the "Summary and System" field as the title.
  *      4. Populate the event description with the "Requested by" email address, "Change Process," "Change Request Description and Rationale," 
  *         "Smoke Testing Plan," and "Rollback Plan."
- *      5. Send a confirmation email to the designated recipient, including the event's title, start time, the submitter's email address, and 
+ *      5. Send a confirmation email to the designated recipients, including the event's title, start time, the submitter's email address, and 
  *         detailed event information.
  *      6. If an error occurs during event creation, send an error notification email to the designated recipient.
  * 
@@ -62,14 +62,14 @@
  * - If an error occurs during event creation, the error message is captured and emailed to the designated recipient for review.
  * 
  * Author: Chad Ramey
- * Date: August 28, 2024
+ * Date: August 29, 2024
  */
 
 // Function to trigger on form submission
 function onFormSubmit(e) {
   try {
-    // Define the calendar ID
-    const calendarId = ''; // Update
+    // Define the Content Platform Releases calendar ID
+    const calendarId = 'gcalID'; // Update
 
     // Get the form responses
     const formResponse = e.values;
@@ -125,10 +125,10 @@ function onFormSubmit(e) {
 
 // Function to send a confirmation email after event creation
 function sendConfirmationEmail(eventTitle, eventDateTime, emailAddress, changeProcess, summaryAndSystem, changeDescription, smokeTestingPlan, rollbackPlan) {
-  const emailRecipients = ''; // Update
+  const emailRecipients = 'Email1, Email2'; // Update
   const subject = `Cab Form Confirmation: Event "${eventTitle}" Created`;
-  const body = `The "${eventTitle}" event has been created on ${eventDateTime} in the Content Platform Releases Calendar. Please review the below change control details and reply to the requestor and cbs.cab@onepeloton.com with any queries.\n\n` +
-               `Full CAB submissions require two explicit approvals; to approve please reply to the requestor and cbs.cab@onepeloton.com with your approval.\n\n` +
+  const body = `The "${eventTitle}" event has been created on ${eventDateTime} in the Calendar. Please review the below change control details and reply to the requestor and Email with any queries.\n\n` +
+               `Full CAB submissions require two explicit approvals; to approve, please click "Reply to all" with your approval.\n\n` +
                `Requested by: ${emailAddress}\n\n` +
                `Change Process: ${changeProcess}\n\n` +
                `Summary and System: ${summaryAndSystem}\n\n` +
@@ -137,13 +137,18 @@ function sendConfirmationEmail(eventTitle, eventDateTime, emailAddress, changePr
                `Rollback Plan: ${rollbackPlan}`;
 
   console.log('Sending Confirmation Email to:', emailRecipients);
-  MailApp.sendEmail(emailRecipients, subject, body);
+  MailApp.sendEmail({
+    to: emailRecipients,
+    subject: subject,
+    body: body,
+    replyTo: emailAddress // Set reply-to to the submitter's email
+  });
   console.log('Confirmation Email Sent');
 }
 
 // Function to send an error notification if something goes wrong
 function sendErrorNotification(errorMessage) {
-  const emailRecipient = ''; // Update
+  const emailRecipient = 'Email'; // Update
   const subject = 'Cab Form Error: Event Creation Failed';
   const body = `An error occurred while attempting to create an event: ${errorMessage}`;
 

@@ -56,7 +56,7 @@
  * - In case of an error during the delegation process, the script sends a failure notification with instructions to contact the administrator.
  * 
  * Author: Chad Ramey
- * Date: August 22, 2024
+ * Date: September 3, 2024
  */
 
 function onFormSubmit(e) {
@@ -69,11 +69,11 @@ function onFormSubmit(e) {
     var calendarOwnerEmail = e.values[2]; // Calendar Owner Email Address
     var authorizedUserEmail = e.values[3]; // Authorized Calendar User Email Address
 
-    // Specify the allowed email address
-    var allowedEmail = ""; // Replace with the actual email address
+    // Specify the allowed email addresses
+    var allowedEmails = ["Email_1", "Email_2"]; // Add more emails as needed
 
     // Check if the submitter's email is allowed
-    if (yourEmail !== allowedEmail) {
+    if (!allowedEmails.includes(yourEmail)) {
         // If not, mark as "Not Authorized" and exit the function
         sheet.getRange(lastRow, 5).setValue("Not Authorized");
         MailApp.sendEmail(yourEmail, "Unauthorized Access", "You are not authorized to use this form.");
@@ -98,7 +98,7 @@ function onFormSubmit(e) {
         }
     } catch (error) {
         Logger.log("Error: " + error.message);
-        MailApp.sendEmail("", "Script Failure Alert: Gcal Delegation", "The script encountered an error: " + error.message); // Add email address
+        MailApp.sendEmail("Email_3", "Script Failure Alert: Gcal Delegation", "The script encountered an error: " + error.message);
     }
 }
   
@@ -132,12 +132,12 @@ function sendEmailNotification(yourEmail, authorizedUserEmail, success) {
                authorizedUserEmail + " has been granted access to the calendar owned by " +
                "the specified user.\n\nPlease note that " + authorizedUserEmail + " will receive an email to add " +
                "the calendar to their list. They need to click 'Add' to complete the process.\n\n" +
-               "If you have any questions, please let me know.\n\nBest regards,\n"; // Name
+               "If you have any questions, please let me know.\n\nBest regards,\nName";
     } else {
         subject = "Calendar Delegation Failed";
         body = "Hello,\n\nThe calendar delegation process encountered an issue and was not successful. " +
-               "Please contact at  for further assistance.\n\n" +
-               "Thank you,\n"; // Email, name, name
+               "Please contact Name at Email_3 for further assistance.\n\n" +
+               "Thank you,\nName";
     }
 
     MailApp.sendEmail(yourEmail, subject, body);

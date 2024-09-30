@@ -3,8 +3,6 @@
 This repository contains a collection of Google Apps Scripts (GAS) that automate various processes in Google Workspace, such as Google Calendar automation, delegation, Google Sheets synchronization, PTO tracking, and account reactivation management.
 
 ## Table of Contents
-- [Google Apps Script Lab](#google-apps-script-lab)
-  - [Table of Contents](#table-of-contents)
   - [Scripts Overview](#scripts-overview)
   - [Requirements](#requirements)
   - [Installation](#installation)

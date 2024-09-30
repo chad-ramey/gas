@@ -6,12 +6,6 @@ This repository contains a collection of Google Apps Scripts (GAS) that automate
 - [Google Apps Script Lab](#google-apps-script-lab)
   - [Table of Contents](#table-of-contents)
   - [Scripts Overview](#scripts-overview)
-    - [1. `gas_cab_form_calendar_automation.js`](#1-gas_cab_form_calendar_automationjs)
-    - [2. `gas_gcal_delegation.js`](#2-gas_gcal_delegationjs)
-    - [3. `gas_gcal_gsheet_sync.js`](#3-gas_gcal_gsheet_syncjs)
-    - [4. `gas_gcal_pto_sync.js`](#4-gas_gcal_pto_syncjs)
-    - [5. `gas_gw_account_reactivation_manager.js`](#5-gas_gw_account_reactivation_managerjs)
-    - [6. `gas_lh_intake.js`](#6-gas_lh_intakejs)
   - [Requirements](#requirements)
   - [Installation](#installation)
   - [Usage](#usage)
@@ -20,22 +14,22 @@ This repository contains a collection of Google Apps Scripts (GAS) that automate
 
 ## Scripts Overview
 
-### 1. `gas_cab_form_calendar_automation.js`
+### 1. [gas_cab_form_calendar_automation.js](gas_cab_form_calendar_automation.js)
 **Description**: This script automates the creation of Google Calendar events based on form submissions. It integrates with Google Forms and Google Calendar to schedule events based on the data submitted in the form. It is designed for use with the CAB (Change Advisory Board) to streamline event creation and scheduling.
 
-### 2. `gas_gcal_delegation.js`
+### 2. [gas_gcal_delegation.js](gas_cab_form_calendar_automation.js)
 **Description**: This script handles Google Calendar delegation. It automatically assigns delegation access to specified users. It can be used to manage calendar permissions at scale, especially useful for handling user transitions in organizations.
 
-### 3. `gas_gcal_gsheet_sync.js`
+### 3. [gas_gcal_gsheet_sync.js](gas_gcal_gsheet_sync.js)
 **Description**: This script syncs data between Google Calendar and Google Sheets. It is used to pull calendar events and update a Google Sheet with the event details, enabling reporting or further processing based on calendar activity.
 
-### 4. `gas_gcal_pto_sync.js`
+### 4. [gas_gcal_pto_sync.js](gas_gcal_gsheet_sync.js)
 **Description**: This script automates PTO (Paid Time Off) tracking by syncing employee PTO events from a shared Google Calendar to a Google Sheet. It can generate reports on PTO usage and ensure that records are kept up to date across multiple systems.
 
-### 5. `gas_gw_account_reactivation_manager.js`
+### 5. [gas_gw_account_reactivation_manager.js](gas_gw_account_reactivation_manager.js)
 **Description**: This script manages Google Workspace account reactivations. It automates the process of monitoring suspended accounts and reactivating them based on certain criteria, such as form submissions or administrative actions.
 
-### 6. `gas_lh_intake.js`
+### 6. [gas_lh_intake.js](gas_lh_intake.js)
 **Description**: This script processes emails with specific criteria and extracts attachments to be stored in Google Drive. It's designed for processing legal hold reports and saving them automatically into a designated Google Drive folder.
 
 ## Requirements

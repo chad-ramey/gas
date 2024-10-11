@@ -77,7 +77,7 @@
  * - Move to Deactivated OU.
  * 
  * Author: Chad Ramey
- * Date: October 10, 2024
+ * Date: October 11, 2024
  */
 
 function onFormSubmit(e) {
@@ -233,6 +233,22 @@ function manageUserSuspension(userEmail, suspend, wasArchived = false) {
 
     } catch (error) {
         Logger.log('Error managing user suspension: ' + error.message);
+    }
+}
+
+function monitorAccounts() {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Monitored Accounts');
+    var data = sheet.getDataRange().getValues();
+    var today = new Date();
+    for (var i = 1; i < data.length; i++) {
+        var userEmail = data[i][0];
+        var deactivateDate = new Date(data[i][1]);
+        var formSubmitterEmail = data[i][2];
+        if (deactivateDate && deactivateDate <= today) {
+            manageUserSuspension(userEmail, true); // Suspend user after timeframe
+            removeAccountFromMonitor(userEmail); // Remove from monitoring list
+            MailApp.sendEmail(formSubmitterEmail, "Account Suspended", `The account ${userEmail} has been suspended after ${data[i][1]}.`);
+        }
     }
 }
 

@@ -33,6 +33,9 @@ This repository contains a collection of Google Apps Scripts (GAS) that automate
 ### 7. [gas_gmail_merge_multiple_recipients.js](gas_gmail_merge_multiple_recipients.js)
 **Description**: This script performs a mail merge using data from a Google Sheets spreadsheet and a Gmail draft template. It adds a custom menu to the sheet, allowing users to trigger the email-sending process.
 
+### 8. [gas_auto_accept_cal_invites.js](gas_auto_accept_cal_invites.js)
+**Description**: This Google Apps Script automatically accepts specific calendar invites sent to a Gmail account and adds them to the user's primary Google Calendar.
+
 ## Requirements
 - **Google Apps Script API Access**: Ensure that your Google Apps Script project has the necessary API access, including permissions for Google Calendar, Google Sheets, Gmail, and Google Drive, depending on the script's purpose.
 - **Google Workspace Admin Permissions**: Some scripts may require admin-level access to manage user accounts and calendar permissions.

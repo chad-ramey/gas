@@ -88,7 +88,10 @@ function onFormSubmit(e) {
     var yourEmail = e.values[1]; // Email Address
     var targetEmail = e.values[3]; // Target Email Address
     var timeframe = e.values[4]; // Timeframe: 30 days, 60 days, Indefinitely, or N/A
-    var allowedEmails = ["chad.ramey@onepeloton.com", "tim.rayburn@onepeloton.com", "nick.henry@onepeloton.com", "fabian.graham@onepeloton.com"]; // List of allowed emails
+    // Store authorized emails in Script Properties: File > Project Settings > Script Properties
+    // Key: ALLOWED_EMAILS, Value: comma-separated list (e.g. "admin1@example.com,admin2@example.com")
+    var allowedEmailsRaw = PropertiesService.getScriptProperties().getProperty('ALLOWED_EMAILS') || '';
+    var allowedEmails = allowedEmailsRaw.split(',').map(function(e) { return e.trim(); }).filter(Boolean);
 
     Logger.log("Form submitted by: " + yourEmail);
     
@@ -254,7 +257,7 @@ function monitorAccounts() {
 
 function sendUnauthorizedEmail(yourEmail) {
     var subject = "Unauthorized Access Attempt";
-    var body = `Hello,\n\nYou attempted to use a form for which you do not have authorization. Please contact the administrator if you believe this is an error.\n\nThank you,\nChad Ramey`;
+    var body = `Hello,\n\nYou attempted to use a form for which you do not have authorization. Please contact the administrator if you believe this is an error.\n\nThank you,\nWorkspace Admin`;
     MailApp.sendEmail(yourEmail, subject, body);
 }
 
@@ -263,10 +266,10 @@ function sendEmailNotification(yourEmail, targetEmail, success) {
 
     if (success) {
         subject = "Form Submission Successful";
-        body = `Hello,\n\nThe form submission for the account ${targetEmail} was successful. The account will be monitored based on the specified timeframe.\n\nThank you,\nChad Ramey`;
+        body = `Hello,\n\nThe form submission for the account ${targetEmail} was successful. The account will be monitored based on the specified timeframe.\n\nThank you,\nWorkspace Admin`;
     } else {
         subject = "Form Submission Failed";
-        body = `Hello,\n\nThe form submission for the account ${targetEmail} encountered an issue. Please contact Chad Ramey for further assistance.\n\nThank you,\nChad Ramey`;
+        body = `Hello,\n\nThe form submission for the account ${targetEmail} encountered an issue. Please contact the Workspace administrator for further assistance.\n\nThank you,\nWorkspace Admin`;
     }
 
     MailApp.sendEmail(yourEmail, subject, body);

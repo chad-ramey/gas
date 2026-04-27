@@ -68,7 +68,7 @@
 // Function to trigger on form submission
 function onFormSubmit(e) {
   try {
-    // Define the Content Platform Releases calendar ID
+    // Define the Releases calendar ID
     const calendarId = 'gcalID'; // Update
 
     // Get the form responses

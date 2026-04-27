@@ -1,11 +1,11 @@
 /**
- * Script: saveAttachmentsToDrive - Save DISCO Hold Report Attachments to Google Drive
- * 
+ * Script: saveAttachmentsToDrive - Save Legal Hold Report Attachments to Google Drive
+ *
  * Description:
- * This Google Apps Script is designed to automate the process of saving specific email attachments 
- * to a designated Google Drive folder. The script searches for emails in your Gmail inbox that match 
- * specific criteria (including labels, subject line, and sender). If matching emails are found and they 
- * contain attachments that follow a specific naming pattern, the attachments are saved to a specified 
+ * This Google Apps Script is designed to automate the process of saving specific email attachments
+ * to a designated Google Drive folder. The script searches for emails in your Gmail inbox that match
+ * specific criteria (including labels, subject line, and sender). If matching emails are found and they
+ * contain attachments that follow a specific naming pattern, the attachments are saved to a specified
  * Google Drive folder.
  *
  * Functions:
@@ -14,23 +14,23 @@
  *   2. Checks each email for attachments that meet a specific naming pattern.
  *   3. Saves the matching attachments to a designated Google Drive folder.
  *   4. (Optional) Moves the processed emails to trash or archives them.
- * 
+ *
  * Usage:
  * 1. **Email Search Criteria:**
  *    - The script searches for emails that match the following criteria:
  *      - **Label:** `_lh` and `inbox`.
- *      - **Subject:** `"DISCO Hold Report"`.
- *      - **Sender:** ``.
+ *      - **Subject:** `"Legal Hold Report"`.
+ *      - **Sender:** Update the `from:` value in the search query with the sender address.
  *    - The emails must contain attachments that match the following naming pattern:
  *      - `report_Member on Hold_YYYY-MM-DD_HH-MM-SS.xlsx`
- *    - The naming pattern is defined using a regular expression to ensure that only correctly 
+ *    - The naming pattern is defined using a regular expression to ensure that only correctly
  *      formatted attachments are processed.
- * 
+ *
  * 2. **Google Drive Folder:**
  *    - The script saves the matching attachments to a specific Google Drive folder.
- *    - The folder is identified by its ID, which is hardcoded in the script:
- *      - `folder = DriveApp.getFolderById("10uKSe_AHHv3JBVmJjsTPP6IKytiU4G2x");`
- *    - Ensure that the correct folder ID is used and that the service account or user running 
+ *    - The folder is identified by its ID. Set the DRIVE_FOLDER_ID Script Property or replace
+ *      the empty string in `DriveApp.getFolderById("")` with your target folder ID.
+ *    - Ensure that the correct folder ID is used and that the service account or user running
  *      the script has write access to the folder.
  * 
  * 3. **Optional Email Handling:**
@@ -49,7 +49,7 @@
  */
 
 function saveAttachmentsToDrive() {
-  var threads = GmailApp.search('label:_lh label:inbox subject:"DISCO Hold Report" from:'); // Update
+  var threads = GmailApp.search('label:_lh label:inbox subject:"Legal Hold Report" from:'); // Update: add sender address after "from:"
   
   for (var i = 0; i < threads.length; i++) {
     var messages = threads[i].getMessages();

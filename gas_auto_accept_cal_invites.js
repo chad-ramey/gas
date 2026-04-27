@@ -20,7 +20,8 @@
 
 function autoAcceptInvites() {
   const calendarId = "primary"; // User's primary calendar
-  const testSenderEmail = "chad.test@onepeloton.com"; // Specific sender for testing
+  // Set SENDER_EMAIL in Script Properties: File > Project Settings > Script Properties
+  const testSenderEmail = PropertiesService.getScriptProperties().getProperty('SENDER_EMAIL') || 'sender@example.com';
   const userEmail = Session.getActiveUser().getEmail(); // Guest's email (target)
 
   Logger.log("Starting autoAcceptInvites script...");
@@ -117,10 +118,16 @@ function parseICal(icsContent) {
     Logger.log(`Extracted iCalUID: ${parsedData.iCalUID}`);
   }
 
-  // Example parsing logic for other fields
-  parsedData.start = '2024-12-04T10:00:00-05:00'; // Example start time
-  parsedData.end = '2024-12-04T11:00:00-05:00'; // Example end time
-  parsedData.summary = 'Sample Event'; // Example event title
+  // Parse start, end, and summary from the ICS content
+  const dtStartMatch = icsContent.match(/DTSTART[^:]*:(.*?)(\n|\r)/);
+  if (dtStartMatch) parsedData.start = dtStartMatch[1].trim();
+
+  const dtEndMatch = icsContent.match(/DTEND[^:]*:(.*?)(\n|\r)/);
+  if (dtEndMatch) parsedData.end = dtEndMatch[1].trim();
+
+  const summaryMatch = icsContent.match(/SUMMARY:(.*?)(\n|\r)/);
+  if (summaryMatch) parsedData.summary = summaryMatch[1].trim();
+
   Logger.log(`Parsed data: ${JSON.stringify(parsedData)}`);
   return parsedData;
 }

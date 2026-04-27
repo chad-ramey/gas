@@ -35,7 +35,7 @@
 function createCalendarEvents() {
   // IDs of the spreadsheet and the tab
   var spreadsheetId = 'docID'; // Replace with your Google Sheets ID
-  var sheetName = 'sheeName';
+  var sheetName = 'sheetName';
 
   // Open the spreadsheet and the specific tab
   var sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName(sheetName);
@@ -45,7 +45,7 @@ function createCalendarEvents() {
   var data = dataRange.getValues();
 
   // Email addresses of the team members
-  var emailAddresses = ['email_1@domain.com', 'email_2@omain.com', 'email_3omain.com']; // Add new email here
+  var emailAddresses = ['email_1@domain.com', 'email_2@domain.com', 'email_3@domain.com']; // Add new email here
 
   // Get today's date
   var currentDate = new Date();

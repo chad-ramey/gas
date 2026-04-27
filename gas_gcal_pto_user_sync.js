@@ -29,10 +29,10 @@ let TEAM_CALENDAR_ID2 = ''; // Calendar
 
 // Set an array of individual email addresses for the script to action on.
 let USER_EMAILS2 = [
-  '',
-  '',
-  '',
-  ''
+  'user1@example.com',
+  'user2@example.com',
+  'user3@example.com',
+  'user4@example.com'
 ];
 
 let KEYWORDS2 = ['pto', 'ooo', 'out of office', 'offline', 'vacation', 'PTO', 'Out of office'];

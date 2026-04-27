@@ -15,25 +15,28 @@ This repository contains a collection of Google Apps Scripts (GAS) that automate
 ### 1. [gas_cab_form_calendar_automation.js](gas_cab_form_calendar_automation.js)
 **Description**: This script automates the creation of Google Calendar events based on form submissions. It integrates with Google Forms and Google Calendar to schedule events based on the data submitted in the form. It is designed for use with the CAB (Change Advisory Board) to streamline event creation and scheduling.
 
-### 2. [gas_gcal_delegation.js](gas_cab_form_calendar_automation.js)
+### 2. [gas_gcal_delegation.js](gas_gcal_delegation.js)
 **Description**: This script handles Google Calendar delegation. It automatically assigns delegation access to specified users. It can be used to manage calendar permissions at scale, especially useful for handling user transitions in organizations.
 
 ### 3. [gas_gcal_gsheet_sync.js](gas_gcal_gsheet_sync.js)
 **Description**: This script syncs data between Google Calendar and Google Sheets. It is used to pull calendar events and update a Google Sheet with the event details, enabling reporting or further processing based on calendar activity.
 
-### 4. [gas_gcal_pto_sync.js](gas_gcal_gsheet_sync.js)
-**Description**: This script automates PTO (Paid Time Off) tracking by syncing employee PTO events from a shared Google Calendar to a Google Sheet. It can generate reports on PTO usage and ensure that records are kept up to date across multiple systems.
+### 4. [gas_gcal_pto_group_sync.js](gas_gcal_pto_group_sync.js)
+**Description**: This script automates PTO (Paid Time Off) tracking by syncing employee PTO events from a shared Google Calendar group to a team calendar. It can generate reports on PTO usage and ensure that records are kept up to date across multiple systems.
 
-### 5. [gas_gw_account_reactivation_manager.js](gas_gw_account_reactivation_manager.js)
+### 5. [gas_gcal_pto_user_sync.js](gas_gcal_pto_user_sync.js)
+**Description**: Variant of the PTO group sync that operates on individual user email addresses instead of a Google Group, useful when direct calendar access per user is required.
+
+### 6. [gas_gw_account_reactivation_manager.js](gas_gw_account_reactivation_manager.js)
 **Description**: This script manages Google Workspace account reactivations. It automates the process of monitoring suspended accounts and reactivating them based on certain criteria, such as form submissions or administrative actions.
 
-### 6. [gas_lh_intake.js](gas_lh_intake.js)
+### 7. [gas_lh_intake.js](gas_lh_intake.js)
 **Description**: This script processes emails with specific criteria and extracts attachments to be stored in Google Drive. It's designed for processing legal hold reports and saving them automatically into a designated Google Drive folder.
 
-### 7. [gas_gmail_merge_multiple_recipients.js](gas_gmail_merge_multiple_recipients.js)
+### 8. [gas_gmail_merge_multiple_recipients.js](gas_gmail_merge_multiple_recipients.js)
 **Description**: This script performs a mail merge using data from a Google Sheets spreadsheet and a Gmail draft template. It adds a custom menu to the sheet, allowing users to trigger the email-sending process.
 
-### 8. [gas_auto_accept_cal_invites.js](gas_auto_accept_cal_invites.js)
+### 9. [gas_auto_accept_cal_invites.js](gas_auto_accept_cal_invites.js)
 **Description**: This Google Apps Script automatically accepts specific calendar invites sent to a Gmail account and adds them to the user's primary Google Calendar.
 
 ## Requirements
@@ -58,7 +61,7 @@ This repository contains a collection of Google Apps Scripts (GAS) that automate
    - Use `gas_gcal_gsheet_sync.js` to pull event data from a Google Calendar into a Google Sheet.
 
 4. **PTO Sync**:
-   - Sync PTO events from a shared calendar using `gas_gcal_pto_sync.js`.
+   - Sync PTO events from a shared Google Group calendar using `gas_gcal_pto_group_sync.js`, or from individual user calendars using `gas_gcal_pto_user_sync.js`.
 
 5. **Account Reactivation**:
    - Automate Google Workspace account reactivations using `gas_gw_account_reactivation_manager.js`.
